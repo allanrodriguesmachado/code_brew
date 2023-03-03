@@ -20,17 +20,29 @@ return [
             Adapter\AdapterAbstractServiceFactory::class
         ],
         'factories' => [
-            Adapter\AdapterInterface::class => Adapter\AdapterAbstractServiceFactory::class
+            Adapter\AdapterInterface::class => Adapter\AdapterServiceFactory::class
         ],
         'aliases' => [
             Adapter\Adapter::class => Adapter\AdapterInterface::class
         ]
     ],
     'db' => [
-        'driver' => 'Pdo',
+        'driver' => 'Pgsql',
         'dns' => 'pgsql:dbname=quiz;hostname=localhost',
         'driver_options' => [
 //            PDO::PGSQL_ATT
         ]
     ]
+//    'db' => [
+//        'driver' => 'Pgsql',
+//        'adapters' => [
+//            'quiz' => [
+//                'driver' => 'Pgsql',
+//                'host' => 'localhost',
+//                'username' => 'quiz',
+//                'dbname' => 'quiz',
+//                'port' => '5432',
+//            ],
+//        ],
+//    ],
 ];
