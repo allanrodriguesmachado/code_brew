@@ -12,4 +12,3 @@ $query->fetch(PDO::FETCH_ASSOC);
     while ($stt = $query->fetchAll()) {
         var_dump($stt);
     }
-
