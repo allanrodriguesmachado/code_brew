@@ -11,7 +11,7 @@ class Connection
     private const USER = 'postgres';
     private const DBNAME = "full_stack_php";
     private const PASSWD = '830314';
-    private const PORT = '5432';
+    private const PORT = '5433';
 
     private const OPTIONS = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -30,12 +30,12 @@ class Connection
         if (empty(static::$instance)) {
             try {
                 self::$instance = new PDO(
-                    "pgsql:host=" . self::HOST . ";dbname=". self::DBNAME.";port=". self::PORT,
+                    "pgsql:host=" . self::HOST . ";dbname=" . self::DBNAME . ";port=" . self::PORT,
                     self::USER,
                     self::PASSWD,
                     self::OPTIONS
                 );
-            }catch (PDOException|\Exception $exception) {
+            } catch (PDOException|\Exception $exception) {
                 return $exception->getMessage();
             }
         }
@@ -49,6 +49,5 @@ class Connection
 
     private function __clone(): void
     {
-
     }
 }
