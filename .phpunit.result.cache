@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"ConnectionTest::testInstanceConnect":0.134}}
+{"version":1,"defects":{"ConnectionTest::testLoadValidUser":7,"UserModelTest::testLoadValidUser":7,"UserModelTest::testLoadInvalidUser":7},"times":{"ConnectionTest::testLoadValidUser":0.133,"ConnectionTest::testInstanceConnect":0.105,"UserModelTest::testLoadValidUser":0.131,"UserModelTest::testLoadInvalidUser":0.128}}
