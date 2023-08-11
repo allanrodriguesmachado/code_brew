@@ -11,5 +11,10 @@
             "email": "allan.rodrigues14@hotmail.com"
         }
     ],
-    "require": {}
+    "require": {
+      "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3"
+    }
 }
