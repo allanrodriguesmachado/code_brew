@@ -60,11 +60,6 @@ abstract class Model
         } catch (PDOException $exception) {
             $this->fail = $exception;
             return null;
-//            if ($this->fail) {
-//                throw $exception;
-//            }
-//
-//            return null;
         }
     }
 
@@ -86,11 +81,6 @@ abstract class Model
         } catch (PDOException $exception) {
             $this->fail = $exception;
             return null;
-//            if ($this->fail) {
-//                throw $exception;
-//            }
-//
-//            return null;
         }
     }
 
@@ -110,11 +100,6 @@ abstract class Model
         } catch (PDOException $exception) {
             $this->fail = $exception;
             return null;
-//            if ($this->fail) {
-//                throw $exception;
-//            }
-//
-//            return null;
         }
     }
 

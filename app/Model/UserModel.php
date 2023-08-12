@@ -8,6 +8,7 @@ class UserModel extends Model
     protected static string $entity = "users";
 
     public function bootstrap(string $firstName, string $lastName, string $email, string $document = null): ?UserModel
+
     {
         $this->first_name = $firstName;
         $this->last_name = $lastName;
