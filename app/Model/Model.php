@@ -10,8 +10,9 @@ use PDOStatement;
 abstract class Model
 {
     protected object|null $data;
-    protected PDOException|bool $fail = false;
+    protected $fail;
     protected string|null $message;
+
     public function data(): ?object
     {
         return $this->data;
@@ -28,15 +29,15 @@ abstract class Model
 
     public function __get(string $name)
     {
-       return $this->data->$name ?? null;
+        return $this->data->$name ?? null;
     }
 
     public function __isset(string $name): bool
     {
-        return isset($this->data->name);
+        return isset($this->data->$name);
     }
 
-    public function fail(): PDOException|bool
+    public function fail(): ?PDOException
     {
         return $this->fail;
     }
@@ -46,8 +47,25 @@ abstract class Model
         return $this->message;
     }
 
-    protected function create()
+    protected function create(string $entity, array $data): ?int
     {
+        try {
+            $columns = implode(", ", array_keys($data));
+            $values = ":" . implode(", :", array_keys($data));
+
+            $stmt = Connection::instanceConnect()
+                ->prepare("INSERT INTO {$entity} ({$columns}) VALUES ({$values})");
+            $stmt->execute($this->filter($data));
+            return Connection::instanceConnect()->lastInsertId();
+        } catch (PDOException $exception) {
+            $this->fail = $exception;
+            return null;
+//            if ($this->fail) {
+//                throw $exception;
+//            }
+//
+//            return null;
+        }
     }
 
     protected function read(string $select, string|array $params = null): ?PDOStatement
@@ -66,27 +84,73 @@ abstract class Model
             $stmt->execute();
             return $stmt;
         } catch (PDOException $exception) {
-            if ($this->fail) {
-                throw $exception;
-            }
+            $this->fail = $exception;
+            return null;
+//            if ($this->fail) {
+//                throw $exception;
+//            }
+//
+//            return null;
+        }
+    }
 
+    protected function update(string $entity, array $data, string $terms, string $params): ?int
+    {
+        try {
+            $dateSet = [];
+            foreach ($data as $bind => $value) {
+                $dateSet[] = "{$bind} = :{$bind}";
+            }
+            $dateSet = implode(", ", $dateSet);
+            parse_str($params, $params);
+
+            $stmt = Connection::instanceConnect()->prepare("UPDATE {$entity} SET {$dateSet} WHERE {$terms}");
+            $stmt->execute($this->filter(array_merge($data, $params)));
+            return ($stmt->rowCount() ?? 1);
+        } catch (PDOException $exception) {
+            $this->fail = $exception;
+            return null;
+//            if ($this->fail) {
+//                throw $exception;
+//            }
+//
+//            return null;
+        }
+    }
+
+    protected function delete(string $entity, string $terms, string $params): ?int
+    {
+        try {
+            $stmt = Connection::instanceConnect()->prepare("DELETE FROM {$entity} WHERE {$terms}");
+            parse_str($params, $params);
+            $stmt->execute($params);
+            return ($stmt->rowCount() ?? 1);
+        } catch (\PDOException $exception) {
+            $this->fail = $exception;
             return null;
         }
     }
 
-    protected function update()
+    protected function safe(): array
     {
+        $safe = (array)$this->data;
+        foreach (static::$safe as $unset) {
+            unset($safe[$unset]);
+        }
+
+        return $safe;
     }
 
-    protected function delete()
+    protected function filter(array $data): array
     {
-    }
+        $filter = [];
+        foreach ($data as $key => $value) {
+            $filter[$key] = (is_null($value)
+                ? null
+                : filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS));
 
-    protected function safe()
-    {
-    }
+        }
 
-    private function filter()
-    {
+        return $filter;
     }
 }
